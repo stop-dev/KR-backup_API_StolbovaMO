@@ -68,25 +68,31 @@ def download_vkphotos_to_yandex(folder_name, photos_json, yandex_client:YandexAP
 
 
 def initial_program() -> tuple:
+    NONE_ = None, None, None
     user_id, download_photos_number = dialog_with_user()
     if user_id == None:
-        return None, None, None
+        return NONE_
 
-    # set logging format
+    # Set logging format
     logging.basicConfig(level=logging.INFO,  format="%(levelname)s: %(message)s")
-
-    # read tokens from .ini file
+    # Reading tokens from .ini file
     config = configparser.ConfigParser()
     config.read("settings.ini")
+
     vk_client = VKAPIClient(config['Tokens']['access_token_vk'], user_id)
+    if vk_client.get_user_info() == None:
+        return NONE_
     yandex_client = YandexAPIClient(config['Tokens']['access_token_yandex_disk'])
     return vk_client, yandex_client, download_photos_number
 
 
 if __name__ == '__main__':
     vk_client, yandex_client, download_photos_number = initial_program()
-
-    photos_json = vk_client.get_photos_json(download_photos_number)
-    if photos_json:
-        folder_name = f"Photos_from_VK {date_today()}"
-        download_vkphotos_to_yandex(folder_name, photos_json, yandex_client)
+    if download_photos_number != None:
+        photos_json = vk_client.get_photos_json(download_photos_number)
+        if photos_json:
+            user_info = vk_client.get_user_info()["response"][0]
+            f_name = user_info["first_name"]
+            l_name = user_info["last_name"]
+            folder_name = f"Photos_from_VK {f_name} {l_name} {date_today()}"
+            download_vkphotos_to_yandex(folder_name, photos_json, yandex_client)

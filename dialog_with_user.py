@@ -1,3 +1,6 @@
+import sys
+
+
 HELLO_TEXT = ('\t ________________________________________________________________',
             '\t|                                                                |',
             '\t| THIS program download photo avatars from vk.com to Yandex disk |',
@@ -6,13 +9,12 @@ HELLO_TEXT = ('\t ______________________________________________________________
             'Be sure, that you have added necessary tokens in file settings.ini',
             ''
         )
-
 INPUT_M = 'Please input VK user ID:'
 INPUT_ = '-> '
 CHECK_M = 'Check your input and try again.'
 EXIT_M = 'If you want to exit the program input EXIT.'
 USER_M = 'This user doesn\'t exists.'
-NUM_M = 'is not an integer.'
+NUM_M = 'is not an integer >= 0.'
 STEP2_M = 'Do you want to enter number of photos to download?'
 STEP3_M = 'How many photos do you want to download?'
 FIVE_M = 'It is 5 by defauilt.'
@@ -29,22 +31,13 @@ def user_input():
     return input()
 
 
-def is_exit(user_id):
-    if user_id == 1:
-        return True
-    return False
-
-
 def is_next_step_2(input_:str) -> bool:
     if input_ in EXIT_:
         return False
-    if not input_.isdigit():
-        print(f"{input_} {NUM_M} {CHECK_M} {EXIT_M}")
+    if input_.isdigit() and int(input_) < sys.maxsize:
+        return True
     else:
-        if is_exit(int(input_)):
-            return True
-        else:
-            print(f"{USER_M} {CHECK_M} {EXIT_M}")
+        print(f"{input_} {NUM_M} {CHECK_M} {EXIT_M}")
     return False
 
 
